@@ -59,9 +59,9 @@ function formatTime(minutes) {
 }
 
 ServerSettings = function(data) {
-  $(".serverName").html(data.ServerName)
-  $(".hint-message").html(data.Hint)
-  $(".serverdesc").html(data.ServerDescription)
+  $(".serverName").text(data.ServerName)
+  $(".hint-message").text(data.Hint)
+  $(".serverdesc").text(data.ServerDescription)
 }
 
 SetPlayerData = function(ip) {
@@ -69,12 +69,12 @@ SetPlayerData = function(ip) {
   $.post(`http://${ip}/cylex_loadingscreen/`, JSON.stringify({}), function(data) {
     var playerData = JSON.parse(data)
     console.log(73, playerData, playerData.steamName)
-    $(".steamName").html(playerData.steamName)
-    $(".steamId").html(playerData.steamId)
-    $(".discordId").html(playerData.discordId)
+    $(".steamName").text(playerData.steamName)
+    $(".steamId").text(playerData.steamId)
+    $(".discordId").text(playerData.discordId)
     $(".steamPng").attr("src", playerData.steamPp)
     var formatted = formatTime(playerData.playTime);
-    $(".time").html(formatted);
+    $(".time").text(formatted);
 
   })
 }
@@ -126,9 +126,9 @@ audioElement.addEventListener("timeupdate", function() {
 
 function playTrack(index) {
   audioElement.src = musicList[index].fileName;
-  $(".label").html(musicList[index].label)
+  $(".label").text(musicList[index].label)
   $(".banner").attr("src", musicList[index].banner)
-  $(".owner").html(musicList[index].owner)
+  $(".owner").text(musicList[index].owner)
   audioElement.play();
 }
 
