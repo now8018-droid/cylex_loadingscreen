@@ -3,7 +3,7 @@ function GetSteamPP(source)
     print(identifier)
     if identifier:match("steam") then
         local callback = promise:new()
-        PerformHttpRequest('http://steamcommunity.com/profiles/' .. tonumber(GetIDFromSource('steam', identifier), 16) .. '/?xml=1', function(Error, Content, Head)
+        PerformHttpRequest('https://steamcommunity.com/profiles/' .. tonumber(GetIDFromSource('steam', identifier), 16) .. '/?xml=1', function(Error, Content, Head)
             local SteamProfileSplitted = stringsplit(Content, '\n')
             if SteamProfileSplitted ~= nil and next(SteamProfileSplitted) ~= nil then
                 for i, Line in ipairs(SteamProfileSplitted) do

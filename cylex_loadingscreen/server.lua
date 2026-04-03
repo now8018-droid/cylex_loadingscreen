@@ -79,11 +79,31 @@ end
 
 
 SetHttpHandler(function(req, res)
-    local path = req.path
+    local path = req.path or "/"
+    local method = (req.method or "GET"):upper()
     -- local ipAddr = (req.address):gmatch("[^:%s]+")()
     local ip = tostring(req.address)
-    local ipWithoutPort = ip:find(":") and ip:sub(1, ip:find(":") - 1) or ip
-    local port = ip:sub(ip:find(":") + 1, #ip)
+    local splitIndex = ip:find(":")
+    local ipWithoutPort = splitIndex and ip:sub(1, splitIndex - 1) or ip
+
+    if method == "OPTIONS" then
+        res.writeHead(204, {["Access-Control-Allow-Origin"] = "*"})
+        res.writeHead(204, {
+            ["Access-Control-Allow-Headers"] = "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+        })
+        res.writeHead(204, {
+            ["Access-Control-Allow-Methods"] = "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+        })
+        return res.send("")
+    end
+
+    if path ~= "/cylex_loadingscreen/" then
+        return res.writeHead(404)
+    end
+
+    if method ~= "POST" and method ~= "GET" then
+        return res.writeHead(405)
+    end
 
     res.writeHead(200, {["Access-Control-Allow-Origin"] = "*"})
     res.writeHead(200, {
@@ -99,12 +119,17 @@ SetHttpHandler(function(req, res)
     if not src then return res.writeHead(404) end
 
     local steam = GetIdent(src, "steam")
+    if not steam or not Data[steam] then
+        return res.writeHead(404)
+    end
+
+    local discord = GetIdent(src, "discord")
     local tbl = {
         steamName = GetPlayerName(src),
         steamId = steam,
-        discordId = GetIdent(src, "discord"),
+        discordId = discord,
         steamPp = GetSteamPP(src),
-        playTime = Data[steam].playtime
+        playTime = Data[steam].playtime or 0
 
     }
 
